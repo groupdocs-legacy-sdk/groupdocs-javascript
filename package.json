@@ -1,0 +1,39 @@
+{
+    "name": "groupdocs-javascript",
+    "version": "0.0.2",
+    "description": "Javascipt client for GroupDocs API",
+    "author": "Marketplace Team <support@groupdocs.com> (http://groupdocs.com/marketplace)",
+    "contributors": ["Zhaidarbek Ayazbayev <zhaidarbek@gmail.com>"],
+    "homepage": "http://groupdocs.com",
+    "keywords": ["groupdocs", "javascript", "sdk", "api", "browser", "browserify", "require", "node", "npm"],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/groupdocs/groupdocs-javascript.git"
+    },
+    "bugs": {
+        "email": "support@groupdocs.com",
+        "url": "https://github.com/groupdocs/groupdocs-javascript/issues"
+    },
+    "main": "./src/index.js",
+    "directories": {
+        "src": "src"
+    },
+    "scripts": {
+        "test": "make test"
+    },
+    "engines": {
+        "node": "*"
+    },
+    "dependencies": {
+        "xmlhttprequest": "latest"
+    },
+    "devDependencies": {
+        "browserify": "latest",
+        "mocha": "latest"
+    },
+    "testling": {
+        "browsers": ["ie10", "firefox/17.0", "chrome/23.0", "opera/12.0", "safari/5.1"],
+        "harness": "mocha-tdd",
+        "files": "test/integration/test.browser-compat.js"
+    }
+}

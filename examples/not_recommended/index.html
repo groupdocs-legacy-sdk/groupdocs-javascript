@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Not recommended way of using GroupDocs Javascript SDK</title>
+		<meta name="author" content="GroupDocs" />
+		<!-- jQuery.ajax is preferred if exists and set with useJqueryForAjax, otherwise XmlHttpRequest -->
+		<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>  -->
+		<!-- use minified version in production -->
+		<!-- <script src="../../dist/groupdocs-javascript-min.js"></script> --> 
+		<script src="../../dist/groupdocs-javascript.js"></script>
+		<script type="text/javascript">
+			groupdocs.utils.DEBUG = true;
+			var clientId = "2721ad21bcf0d71e";
+			var apiKey = "8d8a7d642a807a31c2741c101a60cef2";
+
+			var aClient = new groupdocs.ApiClient(new groupdocs.GroupDocsSecurityHandler(apiKey));
+			var api = new groupdocs.StorageApi(aClient, "https://dev-api.groupdocs.com/v2.0");
+
+			api.GetStorageInfo(function(response) {
+				console.log("success callback");
+				console.log(response.result);
+			}, clientId);
+
+			api.ListEntities(function(response, status, jqXHR) {
+				console.log("success callback " + status);
+				console.log(response.result);
+			}, clientId, "documents");
+
+			var annotation = {
+				type : "0", // Text
+				box : {
+					height : 33,
+					width : 33,
+					x : 133,
+					y : 133
+				},
+				replies : [{
+					text : "test message from JS sdk"
+				}]
+			};
+			new groupdocs.AntApi(aClient, "https://dev-api.groupdocs.com/v2.0").CreateAnnotation(function(response, status, jqXHR) {
+				console.log("success callback");
+				console.log(response);
+			}, clientId, "0dfe609b578898f9df10b01c20c1ea086427b978cd6c5de8a4e2190c5fd4d766", annotation);
+
+			api.MoveFile({
+				onResponse : function(response, status, jqXHR) {
+					console.log("success callback " + status);
+					console.log(response.result);
+				},
+				onError : function(response, status, jqXHR) {
+					console.log("doesn't work because 'Request header field Groupdocs-Copy is not allowed by Access-Control-Allow-Headers'");
+					console.log(response);
+				}
+			}, clientId, "anothername.doc", null, "22041", null);
+			
+			// this function doesn't call API
+			api.GetFile(function(response) {
+				console.log("Download URL is: " + response);
+			}, clientId, "0dfe609b578898f9df10b01c20c1ea086427b978cd6c5de8a4e2190c5fd4d766");
+			
+			new groupdocs.SharedApi(aClient).Download(function(response) {
+				console.log("Download URL is: " + response);
+			}, "0dfe609b578898f9df10b01c20c1ea086427b978cd6c5de8a4e2190c5fd4d766");
+
+			function uploadFile() {
+				var oFile = document.getElementById("upload"
+				).
+				files[0];
+				console.log(oFile);
+				api.Upload(function(response) {
+					console.log(response);
+				}, clientId, oFile.name, "some description", oFile);
+			}
+		</script>
+	</head>
+	<body>
+		<div id="name">
+		  <div></div>
+		</div>
+		<div>
+			<span>Please select a file to upload using StorageApi.Upload operation</span>
+			<input id="upload" type="file" onchange="uploadFile();" />
+		</div>
+		<h4>This is an example of discouraged usage of GroupDocs Javascript SDK. </h4>
+		<p>
+			A few reasons why it's not recommended way:
+		</p>
+		<ol>
+			<li>
+				Javascipt code is inlined in an html - there is no excuse for that.
+			</li>
+			<li>
+				Example uses groupdocs-javascript.js which is a concatenated version of all JS files that comprise the SDK. So if you are using only StorageApi you are still loading whole SDK into the browser.
+			</li>
+			<li>
+				When using groupdocs-javascript.js all objects are added to groupdocs namespace in global scope (window), thus polluting global scope, which is a bad practice.
+			</li>
+		</ol>
+	</body>
+</html>
+

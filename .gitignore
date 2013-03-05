@@ -1,0 +1,7 @@
+.project*
+.classpath*
+.settings/*
+.buildpath*
+.ignore/*
+/node_modules/
+/test/browser/assets/
